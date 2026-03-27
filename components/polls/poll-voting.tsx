@@ -156,7 +156,7 @@ export function PollVoting({
         </CardHeader>
 
         <CardContent className="space-y-4">
-          {canVote && !poll.allowMultipleVotes && (
+          {canVote && (
             <RadioGroup
               value={selectedOptions[0] || ""}
               onValueChange={handleSingleSelect}
@@ -184,35 +184,39 @@ export function PollVoting({
             </RadioGroup>
           )}
 
-          {canVote && poll.allowMultipleVotes && (
-            <div className="space-y-3">
-              {poll.options.map((option, index) => (
-                <motion.div
-                  key={option.id}
-                  className="flex items-center space-x-2 p-3 rounded-lg border border-transparent hover:border-primary/20 hover:bg-primary/5 transition-all"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2, delay: index * 0.05 }}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                >
-                  <Checkbox
-                    id={option.id}
-                    checked={selectedOptions.includes(option.id)}
-                    onCheckedChange={(checked) =>
-                      handleMultiSelect(option.id, checked as boolean)
-                    }
-                  />
-                  <Label
-                    htmlFor={option.id}
-                    className="flex-1 cursor-pointer text-base leading-relaxed"
-                  >
-                    {option.text}
-                  </Label>
-                </motion.div>
-              ))}
-            </div>
-          )}
+          {/*
+		{canVote && poll.allowMultipleVotes && (
+		  <div className="space-y-3">
+			{poll.options.map((option, index) => (
+			  <motion.div
+				key={option.id}
+				className="flex items-center space-x-2 p-3 rounded-lg border border-transparent hover:border-primary/20 hover:bg-primary/5 transition-all"
+				initial={{ opacity: 0, x: -10 }}
+				animate={{ opacity: 1, x: 0 }}
+				transition={{ duration: 0.2, delay: index * 0.05 }}
+				whileHover={{ scale: 1.01 }}
+				whileTap={{ scale: 0.99 }}
+			  >
+				<Checkbox
+				  id={option.id}
+				  checked={selectedOptions.includes(option.id)}
+				  onCheckedChange={(checked) =>
+					handleMultiSelect(option.id, checked as boolean)
+				  }
+				/>
+				<Label
+				  htmlFor={option.id}
+				  className="flex-1 cursor-pointer text-base leading-relaxed"
+				>
+				  {option.text}
+				</Label>
+			  </motion.div>
+			))}
+		  </div>
+		)}
+		*/}
+          {/*</div>
+          )}*/}
 
           {(showResults || hasVoted || !canVote) && (
             <div className="space-y-4">
@@ -269,11 +273,11 @@ export function PollVoting({
           {canVote && (
             <div className="flex items-center justify-between pt-4 border-t">
               <div className="text-sm text-muted-foreground">
-                {poll.allowMultipleVotes
+                {/*{poll.allowMultipleVotes
                   ? `${selectedOptions.length} option${selectedOptions.length !== 1 ? "s" : ""} selected`
                   : selectedOptions.length > 0
                     ? "1 option selected"
-                    : "No option selected"}
+                    : "No option selected"}*/}
               </div>
               <Button
                 onClick={handleSubmitVote}

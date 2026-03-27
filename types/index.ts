@@ -1,6 +1,7 @@
 export interface User {
   id: string;
   name: string;
+  email: string;
   avatar?: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -36,6 +37,13 @@ export interface CreatePollData {
   title: string;
   description?: string;
   options: string[];
+  expiresAt?: Date;
+}
+
+export interface UpdatePollData {
+  title?: string;
+  description?: string;
+  options?: string[];
   expiresAt?: Date;
 }
 

@@ -1,123 +1,72 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { PollCard } from "@/components/polls/poll-card"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Poll, User } from "@/types"
-import { Plus, TrendingUp, Users, Vote, Calendar, BarChart3, Eye, Edit } from "lucide-react"
-import { isPollActive, getPollTotalVotes } from "@/lib/poll-utils"
-
-// Mock user data - replace with actual auth
-const mockUser: User = {
-  id: "user1",
-  name: "John Doe",
-  avatar: null,
-  createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-  updatedAt: new Date()
-}
-
-// Mock user's polls - replace with actual API calls
-const mockUserPolls: Poll[] = [
-  {
-    id: "1",
-    title: "What's your favorite programming language?",
-    description: "Help us understand the programming language preferences in our community",
-    options: [
-      { id: "1a", text: "JavaScript", votes: 45, pollId: "1" },
-      { id: "1b", text: "Python", votes: 38, pollId: "1" },
-      { id: "1c", text: "Java", votes: 22, pollId: "1" },
-      { id: "1d", text: "TypeScript", votes: 35, pollId: "1" }
-    ],
-    creatorId: "user1",
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: "4",
-    title: "Preferred work schedule",
-    description: "What work schedule would you prefer for our team?",
-    options: [
-      { id: "4a", text: "9 AM - 5 PM", votes: 12, pollId: "4" },
-      { id: "4b", text: "10 AM - 6 PM", votes: 18, pollId: "4" },
-      { id: "4c", text: "Flexible hours", votes: 25, pollId: "4" },
-      { id: "4d", text: "Remote first", votes: 8, pollId: "4" }
-    ],
-    creatorId: "user1",
-    expiresAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: "5",
-    title: "Next team building activity",
-    description: null,
-    options: [
-      { id: "5a", text: "Bowling", votes: 7, pollId: "5" },
-      { id: "5b", text: "Escape room", votes: 15, pollId: "5" },
-      { id: "5c", text: "Mini golf", votes: 9, pollId: "5" },
-      { id: "5d", text: "Cooking class", votes: 11, pollId: "5" }
-    ],
-    creatorId: "user1",
-    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-  }
-]
-
-// Helper functions are now imported from lib/poll-utils
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { PollCard } from "@/components/polls/poll-card";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Poll, User } from "@/types";
+import {
+  Plus,
+  TrendingUp,
+  Users,
+  Vote,
+  Calendar,
+  BarChart3,
+  Eye,
+  Edit,
+} from "lucide-react";
+import { isPollActive, getPollTotalVotes } from "@/lib/poll-utils";
+import { usePollStore } from "@/store/usePollStore";
+import { useUserStore } from "@/store/useUserStore";
+import { motion } from "framer-motion";
 
 export default function DashboardPage() {
-  const [userPolls, setUserPolls] = useState<Poll[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<"all" | "active" | "expired">("all")
+  const { user } = useUserStore();
+  const { getUserPolls, isLoading } = usePollStore();
+  const userPolls = user ? getUserPolls(user.id) : [];
 
-  // Mock API call to fetch user's polls
-  useEffect(() => {
-    const fetchUserPolls = async () => {
-      setIsLoading(true)
-      try {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 500))
-        setUserPolls(mockUserPolls)
-      } catch (error) {
-        console.error("Failed to fetch user polls:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchUserPolls()
-  }, [])
+  const [activeTab, setActiveTab] = useState<"all" | "active" | "expired">(
+    "all",
+  );
 
   const getFilteredPolls = () => {
     switch (activeTab) {
       case "active":
-        return userPolls.filter(poll => isPollActive(poll))
+        return userPolls.filter((poll) => isPollActive(poll));
       case "expired":
-        return userPolls.filter(poll => !isPollActive(poll))
+        return userPolls.filter((poll) => !isPollActive(poll));
       default:
-        return userPolls
+        return userPolls;
     }
-  }
+  };
 
   const getStats = () => {
-    const totalPolls = userPolls.length
-    const totalVotes = userPolls.reduce((sum, poll) => sum + getPollTotalVotes(poll), 0)
-    const activePolls = userPolls.filter(poll => isPollActive(poll)).length
-    const avgVotesPerPoll = totalPolls > 0 ? Math.round(totalVotes / totalPolls) : 0
+    const totalPolls = userPolls.length;
+    const totalVotes = userPolls.reduce(
+      (sum, poll) => sum + getPollTotalVotes(poll),
+      0,
+    );
+    const activePolls = userPolls.filter((poll) => isPollActive(poll)).length;
+    const avgVotesPerPoll =
+      totalPolls > 0 ? Math.round(totalVotes / totalPolls) : 0;
 
-    return { totalPolls, totalVotes, activePolls, avgVotesPerPoll }
-  }
+    return { totalPolls, totalVotes, activePolls, avgVotesPerPoll };
+  };
 
   const handlePollView = (pollId: string) => {
-    window.location.href = `/polls/${pollId}`
-  }
+    window.location.href = `/polls/${pollId}`;
+  };
 
-  const stats = getStats()
-  const filteredPolls = getFilteredPolls()
+  const stats = getStats();
+  const filteredPolls = getFilteredPolls();
 
   if (isLoading) {
     return (
@@ -158,18 +107,24 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="space-y-8">
+      <motion.div
+        className="space-y-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
             <p className="text-muted-foreground">
-              Welcome back, {mockUser.name}! Manage your polls and track their performance.
+              Welcome back, {user?.name || "User"}! Manage your polls and track
+              their performance.
             </p>
           </div>
           <Link href="/create-poll">
@@ -182,53 +137,71 @@ export default function DashboardPage() {
 
         {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center">
-                <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                <div className="ml-2">
-                  <p className="text-sm font-medium leading-none">Total Polls</p>
-                  <p className="text-2xl font-bold">{stats.totalPolls}</p>
+          <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
+            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/10">
+              <CardContent className="pt-6">
+                <div className="flex items-center">
+                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                  <div className="ml-2">
+                    <p className="text-sm font-medium leading-none">
+                      Total Polls
+                    </p>
+                    <p className="text-2xl font-bold">{stats.totalPolls}</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-green-500" />
-                <div className="ml-2">
-                  <p className="text-sm font-medium leading-none">Active Polls</p>
-                  <p className="text-2xl font-bold">{stats.activePolls}</p>
+          <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
+            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/10">
+              <CardContent className="pt-6">
+                <div className="flex items-center">
+                  <div className="w-4 h-4 rounded-full bg-green-500" />
+                  <div className="ml-2">
+                    <p className="text-sm font-medium leading-none">
+                      Active Polls
+                    </p>
+                    <p className="text-2xl font-bold">{stats.activePolls}</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center">
-                <Vote className="h-4 w-4 text-muted-foreground" />
-                <div className="ml-2">
-                  <p className="text-sm font-medium leading-none">Total Votes</p>
-                  <p className="text-2xl font-bold">{stats.totalVotes}</p>
+          <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
+            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/10">
+              <CardContent className="pt-6">
+                <div className="flex items-center">
+                  <Vote className="h-4 w-4 text-muted-foreground" />
+                  <div className="ml-2">
+                    <p className="text-sm font-medium leading-none">
+                      Total Votes
+                    </p>
+                    <p className="text-2xl font-bold">{stats.totalVotes}</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center">
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                <div className="ml-2">
-                  <p className="text-sm font-medium leading-none">Avg. Votes/Poll</p>
-                  <p className="text-2xl font-bold">{stats.avgVotesPerPoll}</p>
+          <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
+            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/10">
+              <CardContent className="pt-6">
+                <div className="flex items-center">
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <div className="ml-2">
+                    <p className="text-sm font-medium leading-none">
+                      Avg. Votes/Poll
+                    </p>
+                    <p className="text-2xl font-bold">
+                      {stats.avgVotesPerPoll}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
 
         {/* Recent Activity */}
@@ -242,8 +215,14 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {userPolls.slice(0, 3).map((poll) => (
-                  <div key={poll.id} className="flex items-center justify-between p-4 border rounded-lg">
+                {userPolls.slice(0, 3).map((poll, index) => (
+                  <motion.div
+                    key={poll.id}
+                    className="flex items-center justify-between p-4 border rounded-lg hover:border-primary/30 hover:bg-primary/5 transition-colors"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
                     <div className="flex-1">
                       <h4 className="font-medium">{poll.title}</h4>
                       <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-1">
@@ -253,15 +232,24 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-3 w-3" />
-                          <span>{new Date(poll.createdAt).toLocaleDateString()}</span>
+                          <span>
+                            {new Date(poll.createdAt).toLocaleDateString()}
+                          </span>
                         </div>
-                        <Badge variant={isPollActive(poll) ? "default" : "secondary"} className="text-xs">
+                        <Badge
+                          variant={isPollActive(poll) ? "default" : "secondary"}
+                          className="text-xs"
+                        >
                           {isPollActive(poll) ? "Active" : "Inactive"}
                         </Badge>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => handlePollView(poll.id)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePollView(poll.id)}
+                      >
                         <Eye className="h-3 w-3 mr-1" />
                         View
                       </Button>
@@ -270,7 +258,7 @@ export default function DashboardPage() {
                         Edit
                       </Button>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </CardContent>
@@ -312,13 +300,14 @@ export default function DashboardPage() {
                 <div className="text-center py-12">
                   <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-lg font-semibold mb-2">
-                    {activeTab === "all" ? "No polls yet" : `No ${activeTab} polls`}
+                    {activeTab === "all"
+                      ? "No polls yet"
+                      : `No ${activeTab} polls`}
                   </h3>
                   <p className="text-muted-foreground mb-4">
                     {activeTab === "all"
                       ? "Create your first poll to get started!"
-                      : `You don't have any ${activeTab} polls at the moment.`
-                    }
+                      : `You don't have any ${activeTab} polls at the moment.`}
                   </p>
                   {activeTab === "all" && (
                     <Link href="/create-poll">
@@ -332,7 +321,12 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <motion.div
+              className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
               {filteredPolls.map((poll) => (
                 <PollCard
                   key={poll.id}
@@ -341,7 +335,7 @@ export default function DashboardPage() {
                   showResults={true}
                 />
               ))}
-            </div>
+            </motion.div>
           )}
         </div>
 
@@ -374,7 +368,7 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
     </div>
-  )
+  );
 }

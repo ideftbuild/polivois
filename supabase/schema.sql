@@ -40,7 +40,7 @@ CREATE TABLE votes (
     poll_id UUID REFERENCES polls(id) ON DELETE CASCADE NOT NULL,
     option_id UUID REFERENCES poll_options(id) ON DELETE CASCADE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
-    
+
     -- Ensure a user can only vote once per poll
     UNIQUE(user_id, poll_id)
 );
@@ -59,20 +59,20 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' THEN
         -- Increment vote count for the option
-        UPDATE poll_options 
+        UPDATE poll_options
         SET votes = votes + 1
         WHERE id = NEW.option_id;
-        
+
         RETURN NEW;
     ELSIF TG_OP = 'DELETE' THEN
         -- Decrement vote count for the option
-        UPDATE poll_options 
+        UPDATE poll_options
         SET votes = votes - 1
         WHERE id = OLD.option_id;
-        
+
         RETURN OLD;
     END IF;
-    
+
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -141,7 +141,7 @@ CREATE POLICY "Users can delete their own polls" ON polls
 CREATE POLICY "Anyone can view poll options for active polls" ON poll_options
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM polls 
+            SELECT 1 FROM polls
             WHERE id = poll_id AND (expires_at IS NULL OR expires_at > NOW())
         )
     );
@@ -149,7 +149,7 @@ CREATE POLICY "Anyone can view poll options for active polls" ON poll_options
 CREATE POLICY "Users can view poll options for their own polls" ON poll_options
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM polls 
+            SELECT 1 FROM polls
             WHERE id = poll_id AND creator_id = auth.uid()
         )
     );
@@ -157,7 +157,7 @@ CREATE POLICY "Users can view poll options for their own polls" ON poll_options
 CREATE POLICY "Users can create options for their own polls" ON poll_options
     FOR INSERT WITH CHECK (
         EXISTS (
-            SELECT 1 FROM polls 
+            SELECT 1 FROM polls
             WHERE id = poll_id AND creator_id = auth.uid()
         )
     );
@@ -165,7 +165,7 @@ CREATE POLICY "Users can create options for their own polls" ON poll_options
 CREATE POLICY "Users can update options for their own polls" ON poll_options
     FOR UPDATE USING (
         EXISTS (
-            SELECT 1 FROM polls 
+            SELECT 1 FROM polls
             WHERE id = poll_id AND creator_id = auth.uid()
         )
     );
@@ -173,7 +173,7 @@ CREATE POLICY "Users can update options for their own polls" ON poll_options
 CREATE POLICY "Users can delete options for their own polls" ON poll_options
     FOR DELETE USING (
         EXISTS (
-            SELECT 1 FROM polls 
+            SELECT 1 FROM polls
             WHERE id = poll_id AND creator_id = auth.uid()
         )
     );
@@ -186,7 +186,7 @@ CREATE POLICY "Authenticated users can vote on active polls" ON votes
     FOR INSERT WITH CHECK (
         auth.uid() = user_id AND
         EXISTS (
-            SELECT 1 FROM polls 
+            SELECT 1 FROM polls
             WHERE id = poll_id AND (expires_at IS NULL OR expires_at > NOW())
         )
     );
@@ -201,7 +201,7 @@ BEGIN
     INSERT INTO user_profiles (id, name, avatar)
     VALUES (
         NEW.id,
-        COALESCE(NEW.raw_user_meta_data->>'name', NEW.email),
+        COALESCE(NEW.raw_user_meta_data->>'name', 'Anonymous'),
         NEW.raw_user_meta_data->>'avatar_url'
     );
     RETURN NEW;
@@ -222,19 +222,24 @@ DECLARE
 BEGIN
     -- Get poll expiration date
     SELECT expires_at INTO poll_expires_at
-    FROM polls 
+    FROM polls
     WHERE id = poll_uuid;
-    
+
     -- Check if poll exists and is active
     IF NOT FOUND OR (poll_expires_at IS NOT NULL AND poll_expires_at <= NOW()) THEN
         RETURN FALSE;
     END IF;
-    
+
     -- Check if user has already voted on this poll
     SELECT COUNT(*) INTO existing_votes
     FROM votes
     WHERE poll_id = poll_uuid AND user_id = user_uuid;
-    
+
     RETURN existing_votes = 0;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Enable Supabase Realtime for the tables
+-- This is required for clients to receive broadcast events (INSERT, UPDATE, DELETE)
+ALTER PUBLICATION supabase_realtime ADD TABLE polls;
+ALTER PUBLICATION supabase_realtime ADD TABLE poll_options;

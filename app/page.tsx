@@ -16,13 +16,18 @@ import { useAuth } from "@/hooks/use-auth";
 export default function Home() {
   const { user, loading } = useAuth();
 
+  console.log("Control in Home page component");
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col dark:text-gray-200">
       {/* Hero Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="container mx-auto text-center dark:text-black">
+      <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900 dark:to-indigo-950">
+        <div className="container mx-auto text-center">
           <div className="max-w-3xl mx-auto space-y-8">
-            <Badge variant="outline" className="text-sm px-4 py-2 dark:text-black">
+            <Badge
+              variant="outline"
+              className="text-sm px-4 py-2 dark:text-black"
+            >
               🎉 Welcome to polivois
             </Badge>
 
@@ -43,7 +48,7 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/create-poll">
-                <Button size="lg" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto cursor-pointer">
                   <Vote className="h-5 w-5 mr-2" />
                   Create Your First Poll
                 </Button>
@@ -52,7 +57,7 @@ export default function Home() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="w-full sm:w-auto"
+                  className="w-full sm:w-auto cursor-pointer"
                 >
                   <BarChart3 className="h-5 w-5 mr-2" />
                   Browse Polls
@@ -195,7 +200,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-indigo-100  dark:from-blue-900 dark:to-indigo-950">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">

@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 import Link from "next/link";
 import { AuthProvider } from "@/providers/auth-provider";
+import { StoreProvider } from "@/components/providers/store-provider";
 import { Button } from "@/components/ui/button";
 import { Vote, User, BarChart3, Plus } from "lucide-react";
 import { ThemeProvider } from "@/providers/theme-provider";
@@ -178,11 +179,13 @@ export default function RootLayout({
       <body className="min-h-screen bg-background font-sans antialiased">
         <ThemeProvider>
           <AuthProvider>
-            <div className="flex min-h-screen flex-col">
-              <Navigation />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
+            <StoreProvider>
+              <div className="flex min-h-screen flex-col">
+                <Navigation />
+                <main className="flex-1">{children}</main>
+                <Footer />
+              </div>
+            </StoreProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

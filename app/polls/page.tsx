@@ -1,133 +1,74 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { PollCard } from "@/components/polls/poll-card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Poll } from "@/types"
-import { Search, Plus, Filter, TrendingUp } from "lucide-react"
-import { isPollActive } from "@/lib/poll-utils"
-
-// Mock data - replace with actual API calls
-const mockPolls: Poll[] = [
-  {
-    id: "1",
-    title: "What's your favorite programming language?",
-    description: "Help us understand the programming language preferences in our community",
-    options: [
-      { id: "1a", text: "JavaScript", votes: 45, pollId: "1" },
-      { id: "1b", text: "Python", votes: 38, pollId: "1" },
-      { id: "1c", text: "Java", votes: 22, pollId: "1" },
-      { id: "1d", text: "TypeScript", votes: 35, pollId: "1" }
-    ],
-    creatorId: "user1",
-    creator: { id: "user1", name: "John Doe", email: "john@example.com", avatar: null, createdAt: new Date(), updatedAt: new Date() },
-    allowMultipleVotes: false,
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
-  },
-  {
-    id: "2",
-    title: "Best time for team meetings?",
-    description: "Let's find the optimal time for our weekly team sync",
-    options: [
-      { id: "2a", text: "9:00 AM", votes: 12, pollId: "2" },
-      { id: "2b", text: "11:00 AM", votes: 8, pollId: "2" },
-      { id: "2c", text: "2:00 PM", votes: 15, pollId: "2" },
-      { id: "2d", text: "4:00 PM", votes: 5, pollId: "2" }
-    ],
-    creatorId: "user2",
-    creator: { id: "user2", name: "Jane Smith", email: "jane@example.com", avatar: null, createdAt: new Date(), updatedAt: new Date() },
-    allowMultipleVotes: true,
-    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
-  },
-  {
-    id: "3",
-    title: "Office lunch options",
-    description: null,
-    options: [
-      { id: "3a", text: "Pizza", votes: 25, pollId: "3" },
-      { id: "3b", text: "Sandwiches", votes: 18, pollId: "3" },
-      { id: "3c", text: "Salads", votes: 12, pollId: "3" }
-    ],
-    creatorId: "user3",
-    creator: { id: "user3", name: "Mike Johnson", email: "mike@example.com", avatar: null, createdAt: new Date(), updatedAt: new Date() },
-    allowMultipleVotes: false,
-    expiresAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
-  }
-]
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { PollCard } from "@/components/polls/poll-card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Poll } from "@/types";
+import { Search, Plus, Filter, TrendingUp } from "lucide-react";
+import { isPollActive } from "@/lib/poll-utils";
+import { usePollStore } from "@/store/usePollStore";
+import { motion } from "framer-motion";
 
 export default function PollsPage() {
-  const [polls, setPolls] = useState<Poll[]>([])
-  const [filteredPolls, setFilteredPolls] = useState<Poll[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeFilter, setActiveFilter] = useState<"all" | "active" | "expired">("all")
-  const [isLoading, setIsLoading] = useState(true)
-
-  // Mock API call - replace with actual implementation
-  useEffect(() => {
-    const fetchPolls = async () => {
-      setIsLoading(true)
-      try {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 500))
-        setPolls(mockPolls)
-      } catch (error) {
-        console.error("Failed to fetch polls:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchPolls()
-  }, [])
+  const { polls, isLoading } = usePollStore();
+  const [filteredPolls, setFilteredPolls] = useState<Poll[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState<
+    "all" | "active" | "expired"
+  >("all");
 
   // Filter and search polls
   useEffect(() => {
-    let filtered = polls
+    let filtered = [...polls];
 
     // Apply status filter
     if (activeFilter === "active") {
-      filtered = filtered.filter(poll => isPollActive(poll))
+      filtered = filtered.filter((poll) => isPollActive(poll));
     } else if (activeFilter === "expired") {
-      filtered = filtered.filter(poll => !isPollActive(poll))
+      filtered = filtered.filter((poll) => !isPollActive(poll));
     }
 
     // Apply search filter
     if (searchQuery.trim()) {
-      filtered = filtered.filter(poll =>
-        poll.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        poll.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        poll.creator?.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      filtered = filtered.filter(
+        (poll) =>
+          poll.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          poll.description?.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
     }
 
     // Sort by creation date (newest first)
-    filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    filtered.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
 
-    setFilteredPolls(filtered)
-  }, [polls, searchQuery, activeFilter])
+    setFilteredPolls(filtered);
+  }, [polls, searchQuery, activeFilter]);
 
   const handlePollView = (pollId: string) => {
     // Navigate to poll detail page
-    window.location.href = `/polls/${pollId}`
-  }
+    window.location.href = `/polls/${pollId}`;
+  };
 
   const handlePollVote = (pollId: string) => {
     // Navigate to poll voting page
-    window.location.href = `/polls/${pollId}`
-  }
+    window.location.href = `/polls/${pollId}`;
+  };
 
-  const getActivePolls = () => polls.filter(poll => isPollActive(poll))
+  const getActivePolls = () => polls.filter((poll) => isPollActive(poll));
 
-  const getExpiredPolls = () => polls.filter(poll => !isPollActive(poll))
+  const getExpiredPolls = () => polls.filter((poll) => !isPollActive(poll));
 
   if (isLoading) {
     return (
@@ -156,13 +97,18 @@ export default function PollsPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+      <motion.div
+        className="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="mb-4 md:mb-0">
           <h1 className="text-3xl font-bold tracking-tight">All Polls</h1>
           <p className="text-muted-foreground">
@@ -175,47 +121,73 @@ export default function PollsPage() {
             Create Poll
           </Button>
         </Link>
-      </div>
+      </motion.div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-3 mb-8">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              <div className="ml-2">
-                <p className="text-sm font-medium leading-none">Total Polls</p>
-                <p className="text-2xl font-bold">{polls.length}</p>
+      <motion.div
+        className="grid gap-4 md:grid-cols-3 mb-8"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
+          <Card className="shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="pt-6">
+              <div className="flex items-center">
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <div className="ml-2">
+                  <p className="text-sm font-medium leading-none">
+                    Total Polls
+                  </p>
+                  <p className="text-2xl font-bold">{polls.length}</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-green-500" />
-              <div className="ml-2">
-                <p className="text-sm font-medium leading-none">Active Polls</p>
-                <p className="text-2xl font-bold">{getActivePolls().length}</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+        <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
+          <Card className="shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="pt-6">
+              <div className="flex items-center">
+                <div className="w-4 h-4 rounded-full bg-green-500" />
+                <div className="ml-2">
+                  <p className="text-sm font-medium leading-none">
+                    Active Polls
+                  </p>
+                  <p className="text-2xl font-bold">
+                    {getActivePolls().length}
+                  </p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-gray-500" />
-              <div className="ml-2">
-                <p className="text-sm font-medium leading-none">Expired Polls</p>
-                <p className="text-2xl font-bold">{getExpiredPolls().length}</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+        <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
+          <Card className="shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="pt-6">
+              <div className="flex items-center">
+                <div className="w-4 h-4 rounded-full bg-gray-500" />
+                <div className="ml-2">
+                  <p className="text-sm font-medium leading-none">
+                    Expired Polls
+                  </p>
+                  <p className="text-2xl font-bold">
+                    {getExpiredPolls().length}
+                  </p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </motion.div>
 
       {/* Search and Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
+      <motion.div
+        className="flex flex-col md:flex-row gap-4 mb-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -251,56 +223,86 @@ export default function PollsPage() {
             </Button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Results count */}
-      <div className="flex items-center justify-between mb-6">
+      <motion.div
+        className="flex items-center justify-between mb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
         <p className="text-sm text-muted-foreground">
-          {filteredPolls.length === 0 ? "No polls found" :
-           filteredPolls.length === 1 ? "1 poll found" :
-           `${filteredPolls.length} polls found`}
+          {filteredPolls.length === 0
+            ? "No polls found"
+            : filteredPolls.length === 1
+              ? "1 poll found"
+              : `${filteredPolls.length} polls found`}
         </p>
-      </div>
+      </motion.div>
 
       {/* Polls Grid */}
       {filteredPolls.length === 0 ? (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center py-12">
-              <div className="w-12 h-12 mx-auto mb-4 text-muted-foreground">
-                <Search className="w-full h-full" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="border-dashed border-2">
+            <CardContent className="pt-6">
+              <div className="text-center py-12">
+                <div className="w-12 h-12 mx-auto mb-4 text-muted-foreground">
+                  <Search className="w-full h-full" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">No polls found</h3>
+                <p className="text-muted-foreground mb-4">
+                  {searchQuery || activeFilter !== "all"
+                    ? "Try adjusting your search or filters"
+                    : "Be the first to create a poll!"}
+                </p>
+                {!searchQuery && activeFilter === "all" && (
+                  <Link href="/create-poll">
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Your First Poll
+                    </Button>
+                  </Link>
+                )}
               </div>
-              <h3 className="text-lg font-semibold mb-2">No polls found</h3>
-              <p className="text-muted-foreground mb-4">
-                {searchQuery || activeFilter !== "all"
-                  ? "Try adjusting your search or filters"
-                  : "Be the first to create a poll!"
-                }
-              </p>
-              {!searchQuery && activeFilter === "all" && (
-                <Link href="/create-poll">
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Your First Poll
-                  </Button>
-                </Link>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <motion.div
+          className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1 },
+            },
+          }}
+        >
           {filteredPolls.map((poll) => (
-            <PollCard
+            <motion.div
               key={poll.id}
-              poll={poll}
-              onView={() => handlePollView(poll.id)}
-              onVote={() => handlePollVote(poll.id)}
-              showResults={!isPollActive(poll)}
-            />
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <PollCard
+                key={poll.id}
+                poll={poll}
+                onView={() => handlePollView(poll.id)}
+                onVote={() => handlePollVote(poll.id)}
+                showResults={!isPollActive(poll)}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
-  )
+  );
 }

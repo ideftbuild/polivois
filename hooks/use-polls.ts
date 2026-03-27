@@ -54,15 +54,6 @@ export const usePolls = (options: UsePollsOptions = {}): UsePollsReturn => {
             { id: "1d", text: "TypeScript", votes: 35, pollId: "1" }
           ],
           creatorId: "user1",
-          creator: {
-            id: "user1",
-            name: "John Doe",
-            email: "john@example.com",
-            avatar: null,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          },
-          allowMultipleVotes: false,
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
           updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
@@ -78,15 +69,6 @@ export const usePolls = (options: UsePollsOptions = {}): UsePollsReturn => {
             { id: "2d", text: "4:00 PM", votes: 5, pollId: "2" }
           ],
           creatorId: "user2",
-          creator: {
-            id: "user2",
-            name: "Jane Smith",
-            email: "jane@example.com",
-            avatar: null,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          },
-          allowMultipleVotes: true,
           createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
           updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
         }
@@ -150,15 +132,6 @@ export const usePolls = (options: UsePollsOptions = {}): UsePollsReturn => {
           pollId: `poll_${Date.now()}`
         })),
         creatorId: userId || "unknown",
-        creator: {
-          id: userId || "unknown",
-          name: "Current User",
-          email: "user@example.com",
-          avatar: null,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        },
-        allowMultipleVotes: data.allowMultipleVotes,
         expiresAt: data.expiresAt,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -329,15 +302,6 @@ export const usePoll = (pollId: string) => {
             { id: "1d", text: "TypeScript", votes: 35, pollId: "1" }
           ],
           creatorId: "user1",
-          creator: {
-            id: "user1",
-            name: "John Doe",
-            email: "john@example.com",
-            avatar: null,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          },
-          allowMultipleVotes: false,
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
           updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),

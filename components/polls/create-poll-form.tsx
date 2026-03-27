@@ -20,7 +20,6 @@ export function CreatePollForm({ onSubmit, isLoading = false }: CreatePollFormPr
     title: "",
     description: "",
     options: ["", ""],
-    allowMultipleVotes: false,
     expiresAt: undefined
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -202,29 +201,6 @@ export function CreatePollForm({ onSubmit, isLoading = false }: CreatePollFormPr
           <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
             <h4 className="font-medium text-sm">Poll Settings</h4>
 
-            {/* Multiple Votes */}
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="allowMultipleVotes"
-                checked={formData.allowMultipleVotes}
-                onCheckedChange={(checked) =>
-                  handleInputChange("allowMultipleVotes", checked)
-                }
-                disabled={isLoading}
-              />
-              <div className="space-y-1">
-                <Label
-                  htmlFor="allowMultipleVotes"
-                  className="text-sm font-medium cursor-pointer"
-                >
-                  Allow multiple votes
-                </Label>
-                <p className="text-xs text-muted-foreground">
-                  Let users select multiple options
-                </p>
-              </div>
-            </div>
-
             {/* Expiry Date */}
             <div className="space-y-2">
               <Label htmlFor="expiresAt">Poll Expiry (Optional)</Label>
@@ -269,11 +245,6 @@ export function CreatePollForm({ onSubmit, isLoading = false }: CreatePollFormPr
                 )}
               </div>
               <div className="flex flex-wrap gap-2 pt-2">
-                {formData.allowMultipleVotes && (
-                  <Badge variant="outline" className="text-xs">
-                    Multiple votes allowed
-                  </Badge>
-                )}
                 {formData.expiresAt && (
                   <Badge variant="outline" className="text-xs">
                     Expires {new Date(formData.expiresAt).toLocaleDateString()}

@@ -1,13 +1,12 @@
 "use server";
 
-import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { CreatePollData, UpdatePollData } from "@/types";
 
 export async function createPoll(data: CreatePollData) {
   try {
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = await createClient();
 
     const {
       data: { user },
@@ -63,7 +62,7 @@ export async function createPoll(data: CreatePollData) {
 
 export async function getPolls() {
   try {
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = await createClient();
 
     const { data: polls, error } = await supabase
       .from("polls")
@@ -102,7 +101,7 @@ export async function getPolls() {
 
 export async function getPoll(id: string) {
   try {
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = await createClient();
 
     const {
       data: { user },
@@ -159,7 +158,7 @@ export async function getPoll(id: string) {
 
 export async function getUserPolls() {
   try {
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = await createClient();
 
     const {
       data: { user },
@@ -211,7 +210,7 @@ export async function getUserPolls() {
 
 export async function votePoll(pollId: string, optionId: string) {
   try {
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = await createClient();
 
     const {
       data: { user },
@@ -242,7 +241,7 @@ export async function votePoll(pollId: string, optionId: string) {
 
 export async function updatePoll(pollId: string, data: UpdatePollData) {
   try {
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = await createClient();
 
     const {
       data: { user },

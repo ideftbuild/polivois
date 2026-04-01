@@ -17,7 +17,7 @@ import { ArrowLeft, Share2, Edit, Trash2, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { isPollActive, getPollTotalVotes } from "@/lib/poll-utils";
 import { getPoll, votePoll } from "@/app/actions/poll";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/utils/supabase/client";
 import { usePollStore } from "@/store/usePollStore";
 import { useUserStore } from "@/store/useUserStore";
 import { getUser } from "@/app/actions/user";
@@ -47,7 +47,7 @@ export default function PollPage() {
   const [error, setError] = useState<string | null>(null);
 
   const currentUserId = user?.id;
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   useEffect(() => {
     const fetchUserVotes = async () => {

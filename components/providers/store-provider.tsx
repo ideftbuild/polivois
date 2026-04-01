@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/utils/supabase/client";
 import { usePollStore } from "@/store/usePollStore";
 import { useUserStore } from "@/store/useUserStore";
 import { getPolls } from "@/app/actions/poll";
 import { Poll } from "@/types";
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const {
     setPolls,
     addPoll,

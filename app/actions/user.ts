@@ -1,7 +1,6 @@
 "use server";
 
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 import { User } from "@/types";
 
 export const getUser = async (
@@ -9,7 +8,7 @@ export const getUser = async (
 ): Promise<{ success: boolean; user?: User; error?: string }> => {
   if (!id) return { success: false, error: "User ID is required" };
 
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = await createClient();
 
   const { data: user, error } = await supabase
     .from("user_profiles")

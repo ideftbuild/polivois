@@ -79,10 +79,10 @@ export default function PollPage() {
       }
     };
 
-    if (pollId) {
+    if (poll) {
       fetchUserVotes();
     }
-  }, [pollId]);
+  }, [poll]);
 
   const handleVote = async (optionIds: string[]) => {
     if (!poll || optionIds.length === 0) return;
@@ -157,12 +157,6 @@ export default function PollPage() {
       console.error("Failed to delete poll:", error);
     }
   };
-
-  useEffect(() => {
-    console.log("Creator is : ", creator);
-    console.log("Creator id : ", creator?.id);
-    console.log("Creator name  ", creator?.name);
-  }, [creator]);
 
   const isOwner = poll && currentUserId === poll.creatorId;
   const isExpired = poll?.expiresAt && new Date(poll.expiresAt) < new Date();

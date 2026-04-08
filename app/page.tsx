@@ -65,7 +65,7 @@ export default function Home() {
               {loading
                 ? "..."
                 : user
-                  ? `Welcome, ${user.email}`
+                  ? `Welcome, ${user.user_metadata.name}`
                   : "Create Polls,"}
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5a4252] to-[#a79494] brightness-150">

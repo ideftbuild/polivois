@@ -119,6 +119,10 @@ export default function DashboardPage() {
         transition={{ duration: 0.5 }}
       >
         {/* Header */}
+
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#0e213a] rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#5a4252] rounded-full mix-blend-screen filter blur-[120px] opacity-20 pointer-events-none"></div>
+
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>

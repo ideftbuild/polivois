@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 export function RegisterForm() {
   const [name, setName] = useState("");
@@ -23,10 +24,6 @@ export function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    console.log("control in register form component");
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,17 +60,22 @@ export function RegisterForm() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>Create Account</CardTitle>
-        <CardDescription>
+    <Card className="w-full max-w-md mx-auto bg-[#100418] border-[#5a4252] shadow-2xl relative z-10 overflow-hidden rounded-2xl">
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#5a4252] via-[#a79494] to-[#5a4252]"></div>
+      <CardHeader className="space-y-3 pb-6 pt-8">
+        <CardTitle className="text-2xl font-bold text-white tracking-tight">
+          Create Account
+        </CardTitle>
+        <CardDescription className="text-[#a79494] text-base">
           Sign up to start creating and participating in polls
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
+        <CardContent className="space-y-5">
+          <div className="space-y-2.5">
+            <Label htmlFor="name" className="text-[#a79494] font-medium">
+              Full Name
+            </Label>
             <Input
               id="name"
               name="name"
@@ -82,23 +84,30 @@ export function RegisterForm() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={isLoading}
+              className="bg-[#0d0107] border-[#5a4252] text-white placeholder:text-[#a79494]/50 focus-visible:ring-[#5a4252] focus-visible:border-[#5a4252] rounded-xl h-12"
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+          <div className="space-y-2.5">
+            <Label htmlFor="email" className="text-[#a79494] font-medium">
+              Email
+            </Label>
             <Input
               id="email"
               name="email"
               type="email"
-              placeholder="Enter your email"
+              placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
+              className="bg-[#0d0107] border-[#5a4252] text-white placeholder:text-[#a79494]/50 focus-visible:ring-[#5a4252] focus-visible:border-[#5a4252] rounded-xl h-12"
+              required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+          <div className="space-y-2.5">
+            <Label htmlFor="password" className="text-[#a79494] font-medium">
+              Password
+            </Label>
             <Input
               id="password"
               name="password"
@@ -107,10 +116,17 @@ export function RegisterForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
+              className="bg-[#0d0107] border-[#5a4252] text-white placeholder:text-[#a79494]/50 focus-visible:ring-[#5a4252] focus-visible:border-[#5a4252] rounded-xl h-12"
+              required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <div className="space-y-2.5">
+            <Label
+              htmlFor="confirmPassword"
+              className="text-[#a79494] font-medium"
+            >
+              Confirm Password
+            </Label>
             <Input
               id="confirmPassword"
               name="confirmPassword"
@@ -119,13 +135,30 @@ export function RegisterForm() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
+              className="bg-[#0d0107] border-[#5a4252] text-white placeholder:text-[#a79494]/50 focus-visible:ring-[#5a4252] focus-visible:border-[#5a4252] rounded-xl h-12"
+              required
             />
           </div>
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && (
+            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium flex items-center">
+              <span className="mr-2">⚠</span> {error}
+            </div>
+          )}
         </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating account..." : "Create account"}
+        <CardFooter className="pb-8 pt-2">
+          <Button
+            type="submit"
+            className="w-full h-12 rounded-xl bg-[#5a4252] hover:bg-[#a79494] text-white hover:text-[#0d0107] transition-all duration-300 font-bold text-base shadow-lg shadow-[#5a4252]/25"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Creating account...
+              </>
+            ) : (
+              "Create account"
+            )}
           </Button>
         </CardFooter>
       </form>

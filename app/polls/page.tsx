@@ -73,6 +73,9 @@ export default function PollsPage() {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#0e213a] rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#5a4252] rounded-full mix-blend-screen filter blur-[120px] opacity-20 pointer-events-none"></div>
+
         <div className="space-y-6">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-300 rounded w-1/4 mb-4"></div>

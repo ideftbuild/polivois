@@ -139,24 +139,18 @@ function Footer() {
           <div>
             <h4 className="font-semibold mb-3">Support</h4>
             <div className="space-y-2 text-sm">
-              <a
-                href="#"
-                className="block text-muted-foreground hover:text-foreground"
-              >
-                Help Center
-              </a>
-              <a
-                href="#"
+              <Link
+                href="/contact"
                 className="block text-muted-foreground hover:text-foreground"
               >
                 Contact Us
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="/privacy"
                 className="block text-muted-foreground hover:text-foreground"
               >
                 Privacy Policy
-              </a>
+              </Link>
             </div>
           </div>
         </div>

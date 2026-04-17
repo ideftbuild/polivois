@@ -50,7 +50,7 @@ export function RegisterForm() {
       if (error) {
         setError(error.message);
       } else {
-        router.push("/dashboard");
+        window.location.href = "/dashboard";
       }
     } catch (error) {
       setError("An unexpected error occurred.");

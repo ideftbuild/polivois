@@ -42,7 +42,7 @@ export function LoginForm() {
         console.log("An error occured: ", error.message);
       } else {
         console.log("No error redirecting to dashboard");
-        router.push("/dashboard");
+        window.location.href = "/dashboard";
       }
     } catch (error) {
       setError("An unexpected error occurred.");

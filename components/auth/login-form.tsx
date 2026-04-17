@@ -30,20 +30,28 @@ export function LoginForm() {
     setIsLoading(true);
 
     try {
+      console.log("loggin user in: ", email, password);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      console.log("Done!");
 
       if (error) {
         setError(error.message);
+        console.log("An error occured: ", error.message);
       } else {
+        console.log("No error redirecting to dashboard");
         router.push("/dashboard");
       }
     } catch (error) {
       setError("An unexpected error occurred.");
+      if (error instanceof Error) {
+        console.log("an error occurred unexpectedly: ", error.message);
+      }
     } finally {
       setIsLoading(false);
+      console.log("stopping everything");
     }
   };
 

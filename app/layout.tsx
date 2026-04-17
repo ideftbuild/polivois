@@ -139,18 +139,24 @@ function Footer() {
           <div>
             <h4 className="font-semibold mb-3">Support</h4>
             <div className="space-y-2 text-sm">
-              <Link
+              <a
+                href="#"
+                className="block text-muted-foreground hover:text-foreground"
+              >
+                Help Center
+              </a>
+              <a
                 href="/contact"
                 className="block text-muted-foreground hover:text-foreground"
               >
                 Contact Us
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/privacy"
                 className="block text-muted-foreground hover:text-foreground"
               >
                 Privacy Policy
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -171,7 +177,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background overflow-x-hidden font-sans antialiased`}
       >
         <ThemeProvider>
           <AuthProvider>

@@ -120,9 +120,6 @@ export default function DashboardPage() {
       >
         {/* Header */}
 
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#0e213a] rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#5a4252] rounded-full mix-blend-screen filter blur-[120px] opacity-20 pointer-events-none"></div>
-
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
@@ -222,7 +219,7 @@ export default function DashboardPage() {
                 {userPolls.slice(0, 3).map((poll, index) => (
                   <motion.div
                     key={poll.id}
-                    className="flex flex-col gap-4 md:flex-row items-center justify-between p-4 border rounded-lg hover:border-primary/30 hover:bg-primary/5 transition-colors"
+                    className="flex flex-col gap-4 md:flex-row md:items-center justify-between p-4 border rounded-lg hover:border-primary/30 hover:bg-primary/5 transition-colors"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}

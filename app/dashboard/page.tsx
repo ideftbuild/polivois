@@ -222,12 +222,12 @@ export default function DashboardPage() {
                 {userPolls.slice(0, 3).map((poll, index) => (
                   <motion.div
                     key={poll.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:border-primary/30 hover:bg-primary/5 transition-colors"
+                    className="flex flex-col gap-4 md:flex-row items-center justify-between p-4 border rounded-lg hover:border-primary/30 hover:bg-primary/5 transition-colors"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                   >
-                    <div className="flex-1">
+                    <div className="flex-1 w-full">
                       <h4 className="font-medium">{poll.title}</h4>
                       <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-1">
                         <div className="flex items-center space-x-1">

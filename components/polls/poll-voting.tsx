@@ -83,7 +83,9 @@ export function PollVoting({
   };
 
   const getOptionVotePercentage = (option: PollOption) => {
+    console.log("poll is: ", poll);
     const totalVotes = getPollTotalVotes(poll);
+    console.log("total votes is: ", totalVotes);
     return getVotePercentage(option.votes, totalVotes);
   };
 

@@ -50,6 +50,12 @@ export default function PollPage() {
   const supabase = createClient();
 
   useEffect(() => {
+    if (poll) {
+      console.log("poll is on poll page: ", poll);
+    }
+  }, [poll]);
+
+  useEffect(() => {
     const fetchUserVotes = async () => {
       setIsLoading(true);
       setError(null);

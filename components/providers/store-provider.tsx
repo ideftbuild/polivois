@@ -75,6 +75,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setPollsLoading(true);
       try {
         const result = await getPolls();
+        console.log("all polls retrieved: ", result);
         if (mounted && result.success && result.polls) {
           setPolls(result.polls as unknown as Poll[]);
         }

@@ -129,7 +129,7 @@ export default function DashboardPage() {
             </p>
           </div>
           <Link href="/create-poll">
-            <Button>
+            <Button className="text-muted-foreground">
               <Plus className="h-4 w-4 mr-2" />
               Create New Poll
             </Button>
@@ -139,12 +139,12 @@ export default function DashboardPage() {
         {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
-            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/10">
+            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/80">
               <CardContent className="pt-6">
                 <div className="flex items-center">
                   <BarChart3 className="h-4 w-4 text-muted-foreground" />
                   <div className="ml-2">
-                    <p className="text-sm font-medium leading-none">
+                    <p className="text-sm font-medium leading-none text-muted-foreground">
                       Total Polls
                     </p>
                     <p className="text-2xl font-bold">{stats.totalPolls}</p>
@@ -155,12 +155,12 @@ export default function DashboardPage() {
           </motion.div>
 
           <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
-            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/10">
+            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/80">
               <CardContent className="pt-6">
                 <div className="flex items-center">
                   <div className="w-4 h-4 rounded-full bg-green-500" />
                   <div className="ml-2">
-                    <p className="text-sm font-medium leading-none">
+                    <p className="text-sm font-medium leading-none text-muted-foreground">
                       Active Polls
                     </p>
                     <p className="text-2xl font-bold">{stats.activePolls}</p>
@@ -171,12 +171,12 @@ export default function DashboardPage() {
           </motion.div>
 
           <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
-            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/10">
+            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/80">
               <CardContent className="pt-6">
                 <div className="flex items-center">
                   <Vote className="h-4 w-4 text-muted-foreground" />
                   <div className="ml-2">
-                    <p className="text-sm font-medium leading-none">
+                    <p className="text-sm font-medium leading-none text-muted-foreground">
                       Total Votes
                     </p>
                     <p className="text-2xl font-bold">{stats.totalVotes}</p>
@@ -187,12 +187,12 @@ export default function DashboardPage() {
           </motion.div>
 
           <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
-            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/10">
-              <CardContent className="pt-6">
+            <Card className="h-full shadow-md hover:shadow-xl transition-shadow bg-card/50 backdrop-blur-sm border-primary/80">
+              <CardContent className="pt-6 ">
                 <div className="flex items-center">
                   <TrendingUp className="h-4 w-4 text-muted-foreground" />
                   <div className="ml-2">
-                    <p className="text-sm font-medium leading-none">
+                    <p className="text-sm font-medium leading-none text-muted-foreground">
                       Avg. Votes/Poll
                     </p>
                     <p className="text-2xl font-bold">
@@ -272,6 +272,7 @@ export default function DashboardPage() {
             <h2 className="text-2xl font-bold">My Polls</h2>
             <div className="flex space-x-1">
               <Button
+                className="text-muted-foreground"
                 variant={activeTab === "all" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setActiveTab("all")}
@@ -312,7 +313,7 @@ export default function DashboardPage() {
                   </p>
                   {activeTab === "all" && (
                     <Link href="/create-poll">
-                      <Button>
+                      <Button className="text-muted-foreground">
                         <Plus className="h-4 w-4 mr-2" />
                         Create Your First Poll
                       </Button>

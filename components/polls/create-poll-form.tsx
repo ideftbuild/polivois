@@ -1,116 +1,128 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
-import { CreatePollData } from "@/types"
-import { X, Plus } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { CreatePollData } from "@/types";
+import { X, Plus } from "lucide-react";
 
 interface CreatePollFormProps {
-  onSubmit: (data: CreatePollData) => Promise<void>
-  isLoading?: boolean
+  onSubmit: (data: CreatePollData) => Promise<void>;
+  isLoading?: boolean;
 }
 
-export function CreatePollForm({ onSubmit, isLoading = false }: CreatePollFormProps) {
+export function CreatePollForm({
+  onSubmit,
+  isLoading = false,
+}: CreatePollFormProps) {
   const [formData, setFormData] = useState<CreatePollData>({
     title: "",
     description: "",
     options: ["", ""],
-    expiresAt: undefined
-  })
-  const [errors, setErrors] = useState<Record<string, string>>({})
+    expiresAt: undefined,
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setErrors({})
+    e.preventDefault();
+    setErrors({});
 
     // Validation
-    const newErrors: Record<string, string> = {}
+    const newErrors: Record<string, string> = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = "Poll title is required"
+      newErrors.title = "Poll title is required";
     }
 
-    const validOptions = formData.options.filter(option => option.trim())
+    const validOptions = formData.options.filter((option) => option.trim());
     if (validOptions.length < 2) {
-      newErrors.options = "At least 2 options are required"
+      newErrors.options = "At least 2 options are required";
     }
 
     if (formData.expiresAt) {
-      const expiryDate = new Date(formData.expiresAt)
+      const expiryDate = new Date(formData.expiresAt);
       if (expiryDate <= new Date()) {
-        newErrors.expiresAt = "Expiry date must be in the future"
+        newErrors.expiresAt = "Expiry date must be in the future";
       }
     }
 
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
+      setErrors(newErrors);
+      return;
     }
 
     try {
       const pollData: CreatePollData = {
         ...formData,
         options: validOptions,
-        expiresAt: formData.expiresAt ? new Date(formData.expiresAt) : undefined
-      }
-      await onSubmit(pollData)
+        expiresAt: formData.expiresAt
+          ? new Date(formData.expiresAt)
+          : undefined,
+      };
+      await onSubmit(pollData);
     } catch (error) {
-      console.error("Failed to create poll:", error)
+      console.error("Failed to create poll:", error);
     }
-  }
+  };
 
   const handleInputChange = (field: keyof CreatePollData, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
-    }))
+      [field]: value,
+    }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors[field]
-        return newErrors
-      })
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
     }
-  }
+  };
 
   const handleOptionChange = (index: number, value: string) => {
-    const newOptions = [...formData.options]
-    newOptions[index] = value
-    handleInputChange("options", newOptions)
-  }
+    const newOptions = [...formData.options];
+    newOptions[index] = value;
+    handleInputChange("options", newOptions);
+  };
 
   const addOption = () => {
     if (formData.options.length < 10) {
-      handleInputChange("options", [...formData.options, ""])
+      handleInputChange("options", [...formData.options, ""]);
     }
-  }
+  };
 
   const removeOption = (index: number) => {
     if (formData.options.length > 2) {
-      const newOptions = formData.options.filter((_, i) => i !== index)
-      handleInputChange("options", newOptions)
+      const newOptions = formData.options.filter((_, i) => i !== index);
+      handleInputChange("options", newOptions);
     }
-  }
+  };
 
   const formatDateForInput = (date?: Date) => {
-    if (!date) return ""
-    const d = new Date(date)
-    d.setMinutes(d.getMinutes() - d.getTimezoneOffset())
-    return d.toISOString().slice(0, 16)
-  }
+    if (!date) return "";
+    const d = new Date(date);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
+  };
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Create New Poll</CardTitle>
         <CardDescription>
-          Create a new poll for others to vote on. Add your question and possible answers.
+          Create a new poll for others to vote on. Add your question and
+          possible answers.
         </CardDescription>
       </CardHeader>
 
@@ -149,7 +161,8 @@ export function CreatePollForm({ onSubmit, isLoading = false }: CreatePollFormPr
             <div className="flex items-center justify-between">
               <Label>Poll Options *</Label>
               <Badge variant="outline" className="text-xs">
-                {formData.options.filter(opt => opt.trim()).length} of {formData.options.length}
+                {formData.options.filter((opt) => opt.trim()).length} of{" "}
+                {formData.options.length}
               </Badge>
             </div>
 
@@ -207,9 +220,16 @@ export function CreatePollForm({ onSubmit, isLoading = false }: CreatePollFormPr
               <Input
                 id="expiresAt"
                 type="datetime-local"
-                value={formData.expiresAt ? formatDateForInput(formData.expiresAt) : ""}
+                value={
+                  formData.expiresAt
+                    ? formatDateForInput(formData.expiresAt)
+                    : ""
+                }
                 onChange={(e) =>
-                  handleInputChange("expiresAt", e.target.value ? new Date(e.target.value) : undefined)
+                  handleInputChange(
+                    "expiresAt",
+                    e.target.value ? new Date(e.target.value) : undefined,
+                  )
                 }
                 disabled={isLoading}
                 min={formatDateForInput(new Date())}
@@ -232,16 +252,22 @@ export function CreatePollForm({ onSubmit, isLoading = false }: CreatePollFormPr
                 {formData.title || "Your poll question will appear here"}
               </h3>
               {formData.description && (
-                <p className="text-muted-foreground text-sm">{formData.description}</p>
+                <p className="text-muted-foreground text-sm">
+                  {formData.description}
+                </p>
               )}
               <div className="space-y-1">
-                {formData.options.map((option, index) =>
-                  option.trim() && (
-                    <div key={index} className="flex items-center space-x-2 text-sm">
-                      <div className="w-4 h-4 rounded-full border border-muted-foreground"></div>
-                      <span>{option}</span>
-                    </div>
-                  )
+                {formData.options.map(
+                  (option, index) =>
+                    option.trim() && (
+                      <div
+                        key={index}
+                        className="flex items-center space-x-2 text-sm"
+                      >
+                        <div className="w-4 h-4 rounded-full border border-muted-foreground"></div>
+                        <span>{option}</span>
+                      </div>
+                    ),
                 )}
               </div>
               <div className="flex flex-wrap gap-2 pt-2">
@@ -256,16 +282,20 @@ export function CreatePollForm({ onSubmit, isLoading = false }: CreatePollFormPr
 
           {/* Submit Button */}
           <div className="flex items-center justify-end space-x-2 pt-4">
-            <Button
+            {/*<Button
               type="button"
               variant="outline"
               disabled={isLoading}
             >
               Save as Draft
-            </Button>
+            </Button>*/}
             <Button
               type="submit"
-              disabled={isLoading || !formData.title.trim() || formData.options.filter(opt => opt.trim()).length < 2}
+              disabled={
+                isLoading ||
+                !formData.title.trim() ||
+                formData.options.filter((opt) => opt.trim()).length < 2
+              }
             >
               {isLoading ? "Creating Poll..." : "Create Poll"}
             </Button>
@@ -273,5 +303,5 @@ export function CreatePollForm({ onSubmit, isLoading = false }: CreatePollFormPr
         </CardContent>
       </form>
     </Card>
-  )
+  );
 }

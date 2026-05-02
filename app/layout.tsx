@@ -51,7 +51,7 @@ function Navigation() {
 
           <div className="flex items-center space-x-4">
             <Link href="/create-poll">
-              <Button size="sm">
+              <Button size="sm" className="text-muted-foreground ">
                 <Plus className="h-4 w-4 mr-2" />
                 Create Poll
               </Button>
@@ -64,7 +64,9 @@ function Navigation() {
                 </Button>
               </Link>
               <Link href="/register">
-                <Button size="sm">Sign Up</Button>
+                <Button size="sm" className="text-muted-foreground">
+                  Sign Up
+                </Button>
               </Link>
             </div>
 
@@ -139,12 +141,12 @@ function Footer() {
           <div>
             <h4 className="font-semibold mb-3">Support</h4>
             <div className="space-y-2 text-sm">
-              <a
+              {/*<a
                 href="#"
                 className="block text-muted-foreground hover:text-foreground"
               >
                 Help Center
-              </a>
+              </a>*/}
               <a
                 href="/contact"
                 className="block text-muted-foreground hover:text-foreground"
